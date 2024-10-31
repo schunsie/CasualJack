@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dealer">
+    {% if session.get('hands')['cards_dealer'] and (session.get('bet') or winner) %}
+    <div class="dtext">
+        <h2>Dealer</h2>
+        <wrap class="total">{{ session['hands']['totals']['dealer'] }}</wrap>    
+    </div>
+    <div class="cards">
+        {% for card in session['hands']['cards_dealer'] %}
+        <div class="card">
+            <span class="suit {{ card['suit'] }}">{{ card['suituni']|safe }}</span>
+            <span class="value">{{ card['value'] }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {%endif%}
+</div>
+
+<div class="player">
+    {% if bust %}
+    <h1 class="bust">BUST</h1>
+    {% endif %}
+    {% if winner %}
+    <h1 class="winner">
+        {% if winner == 'player' %}
+        You won!
+        {% elif winner == 'dealer' %}
+        The dealer won!
+        {% else %} 
+        Tie!
+        {% endif %}
+    </h1>
+    {% endif %}
+
+    <h2>You</h2>
+    
+    {% if session.get('bet') == None and not winner %}
+    <div class="bet-container">
+        <form class="bet-form" method="POST">
+            <label>Place your bet</label>
+            <input class="bet" name="bet" type="number" required min="1" max="9999" autofocus>
+            <input type="submit" value="Bet" class="bet-btn">
+        </form>
+    </div>
+    {% else %}
+    <wrap class="total">{{ session['hands']['totals']['player'] }}</wrap>
+    <div class="cards">
+        {% for card in session['hands']['cards_player'] %}
+        <div class="card">
+            <span class="suit {{ card['suit'] }}">{{ card['suituni']|safe }}</span>
+            <span class="value">{{ card['value'] }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="buttons">
+        {% if not bust and not session['stand'] %}
+        <a href="/game/hit"><button class="hit">HIT</button></a>
+        <a href="/game/stand"><button class="stand">STAND</button></a>
+        {% else %}
+        <a href="/game/next"><button class="next">Next Round</button></a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{%endblock%}

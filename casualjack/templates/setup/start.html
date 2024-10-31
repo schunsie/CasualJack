@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form class="startform" method="POST">
+    <label for="chips">Chips</label>
+    <input type="number" name="chips" id="chips" min="1" max="9999" autofocus>
+    <input type="submit" value="Start">
+</form>
+{% endblock %}
