@@ -30,7 +30,7 @@ def set_chips():
             session['deck'] = shuffle_deck()
             
             # remembers the index of the next card out of session['deck'] that is to be played
-            session['pcard'] = 0
+            session['pnt_card'] = 0
             return redirect(url_for('index'))
 
         flash(error)
@@ -65,8 +65,8 @@ def shuffle_deck():
     '''
     Returns a list
 
-    Creates a deck of 53 suceeding integers [0, 52] and shuffles the sequence before returning it.
-    Equivalent to shuffleing a deck of playing cards. 
+    Creates a deck of 53 succeeding integers [0, 52] and shuffles the sequence before returning it.
+    Equivalent to shuffling a deck of playing cards. 
     '''
     deck = list(range(0, 52))
     shuffle(deck)

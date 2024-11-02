@@ -10,7 +10,7 @@
     <div class="cards">
         {% for card in session['hands']['cards_dealer'] %}
         <div class="card">
-            <span class="suit {{ card['suit'] }}">{{ card['suituni']|safe }}</span>
+            <span class="suit {{ card['suit'] }}">{{ card['suit_uni']|safe }}</span>
             <span class="value">{{ card['value'] }}</span>
         </div>
         {% endfor %}
@@ -49,7 +49,7 @@
     <div class="cards">
         {% for card in session['hands']['cards_player'] %}
         <div class="card">
-            <span class="suit {{ card['suit'] }}">{{ card['suituni']|safe }}</span>
+            <span class="suit {{ card['suit'] }}">{{ card['suit_uni']|safe }}</span>
             <span class="value">{{ card['value'] }}</span>
         </div>
         {% endfor %}

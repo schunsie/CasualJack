@@ -12,7 +12,7 @@ bp = Blueprint('game', __name__)
 def index():
     winner = None
     
-    # determine if first or new round
+    # if round has not yet begun
     if session.get('bet') == None and session['chips'] != 0:
         error = None
         
@@ -33,21 +33,21 @@ def index():
 
             flash(error)
     
-    # if not first of new round, it is an active round 
+    # if round has begun (read: bet has been made)
     else:
         if not session.get('hands'):
             # configure initial hands for the round
-            dcards = deal_card(1)
-            pcards = deal_card(2)
+            dealer_cards = deal_card(1)
+            player_cards = deal_card(2)
 
             session['stand'] = False
             
             session['hands'] = {
-                'cards_dealer' : dcards,
-                'cards_player' : pcards,
+                'cards_dealer' : dealer_cards,
+                'cards_player' : player_cards,
                 'totals' : {
-                    'dealer' : hand_total(dcards),
-                    'player' : hand_total(pcards)
+                    'dealer' : hand_total(dealer_cards),
+                    'player' : hand_total(player_cards)
                 }
             }
 
@@ -56,7 +56,7 @@ def index():
             return(render_template("game/index.html", bust=True))
         elif session['stand']:
             dealer_pull()
-            winner = determinewinner(session['hands']['totals'])
+            winner = determine_winner(session['hands']['totals'])
             match winner:
                 case 'player':
                     session['chips'] += session['bet'] * 2
@@ -85,67 +85,67 @@ def deal_card(n):
     '''
 
     # determine if whole deck has been played
-    if session['pcard'] + n > len(session['deck']):
+    if session['pnt_card'] + n > len(session['deck']):
         # if so, create new deck and reset card pointer
         session['deck'] = shuffle_deck()
-        session['pcard'] = 0
+        session['pnt_card'] = 0
         print('new deck')
 
     if n == 1:
-        cardnums = [session['deck'][session['pcard']]]
-        session['pcard'] += 1
+        card_nums = [session['deck'][session['pnt_card']]]
+        session['pnt_card'] += 1
     else:
-        cardnums = session['deck'][session['pcard']:(session['pcard']+n)]
-        session['pcard'] += n
+        card_nums = session['deck'][session['pnt_card']:(session['pnt_card']+n)]
+        session['pnt_card'] += n
     
     cards = []
 
     # TODO: determine if redundancy can be reduced if using objects for cards
-    for cardnum in cardnums:
+    for card_num in card_nums:
         # divide by 13 to distinguish the different suits: each suit has 13 cards. 
-        match int(cardnum/13):
+        match int(card_num/13):
             # first 13 cards
             case 0:
                 cards.append({
                     'suit' : 'heart',
-                    'suituni' : '&#9829;',
-                    'value' : valuate_card(cardnum),
-                    'value_num' : valuate_card(cardnum, True)
+                    'suit_uni' : '&#9829;',
+                    'value' : valuate_card(card_num),
+                    'value_num' : valuate_card(card_num, True)
                 })
             # second 13 cards
             case 1:
                 cards.append({
                     'suit' : 'diamond',
-                    'suituni' : '&#9830;',
-                    'value' : valuate_card(cardnum),
-                    'value_num' : valuate_card(cardnum, True)
+                    'suit_uni' : '&#9830;',
+                    'value' : valuate_card(card_num),
+                    'value_num' : valuate_card(card_num, True)
                 })
             # etc. 
             case 2:
                 cards.append({
                     'suit' : 'spade',
-                    'suituni' : '&#9824;',
-                    'value' : valuate_card(cardnum),
-                    'value_num' : valuate_card(cardnum, True)
+                    'suit_uni' : '&#9824;',
+                    'value' : valuate_card(card_num),
+                    'value_num' : valuate_card(card_num, True)
                 })
             case 3:
                 cards.append({
                     'suit' : 'club',
-                    'suituni' : '&#9827;',
-                    'value' : valuate_card(cardnum),
-                    'value_num' : valuate_card(cardnum, True)
+                    'suit_uni' : '&#9827;',
+                    'value' : valuate_card(card_num),
+                    'value_num' : valuate_card(card_num, True)
                 })
 
     return cards
 
 
-def valuate_card(cardnum, nummeric=False):
-    # retrieve relative cardnumber, unaffected by suit
-    value = cardnum % 13
+def valuate_card(card_num, numeric=False):
+    # retrieve relative card_number, unaffected by suit
+    value = card_num % 13
 
-    # determine if value has to be retured as a nummerical value
+    # determine if value has to be returned as a numerical value
     # or as face card name / ace
-    if nummeric == False:
+    if numeric == False:
         match value:
             case 0:
                 return 'A' # Ace
@@ -181,7 +181,7 @@ def dealer_pull():
     # dealer stands on 17 and above
     if session['hands']['totals']['dealer'] >= 17:
         return 
-    # dealer hits till atleast 16: another hit is determined at random
+    # dealer hits till at least 16: another hit is determined at random
     elif session['hands']['totals']['dealer'] == 16 and bool(random.getrandbits(1)):
         return
     
@@ -207,7 +207,7 @@ def next():
     return redirect(url_for('index'))
 
 
-def determinewinner(totals):
+def determine_winner(totals):
     if totals['dealer'] > 21 or totals['player'] > totals['dealer']:
         return 'player'
     elif totals['dealer'] == totals['player']:
