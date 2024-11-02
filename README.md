@@ -1,9 +1,9 @@
 # CasualJack
 > *A clean, risk-free blackjack experience for learning and fun!*
 ### Screenshots
-![Image showcasing the start screen of the game. A form if visible requiring the user to input a amount of chips](images/StartView.png)
-![Image of the start of a blackjack round. In the top left of the screen the current amount of chips is visible. The dealer has one card, and the player two. The player has the option to hit or stand](images/GameView.png)
-![Image similair to the previous image, however this image indicates a winner. In this particulair example the dealer has won, as stated on the screen and visible by the calulated hand values as shown](images/WinView.png)
+![Starting screen of game](images/StartView.png)
+![The beginning of a blackjack round in the game](images/GameView.png)
+![Screen displaying the winner of the round](images/WinView.png)
 
 ### Description
 CasualJack is a web app offering a relaxed, risk-free take on the classic card game blackjack. Perfect for those who love the game but aren't looking to wager money, it provides a safe environment for entertainment, testing strategies, or learning blackjack fundamentals.
